@@ -16,6 +16,15 @@ app.use("/api/auth", authRouter);
 
 app.use(notFound);
 app.use(errorHandler);
-app.listen(PORT, () => {
+
+const server = app.listen(PORT, () => {
   console.log(`Server is running  at PORT ${PORT}`);
+});
+require("./socket").init(server, {
+  cors: {
+    origin: true,
+    allowedHeaders: ["my-custom-header"],
+    credentials: true,
+  },
+
 });

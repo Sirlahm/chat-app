@@ -21,10 +21,10 @@ const signUp = asyncHandler(async (req, res) => {
 
 // Login a user
 const login = asyncHandler(async (req, res) => {
-  const { emailOrPhone, password } = req.body;
+  const { email, password } = req.body;
   // check if user exists or not
   const findUser = await User.findOne({
-    $or: [{ email: emailOrPhone }, { phone: emailOrPhone }],
+    email: email,
   });
   if (findUser && (await findUser.isPasswordMatched(password))) {
     res.json({
