@@ -1,12 +1,17 @@
-import { Box, Stack } from "@mui/material";
-import SideBar from "./SideBar";
-import ChatSection from "./ChatSection";
+import { Routes, Route, Navigate } from "react-router-dom";
+import SignUp from "./pages/auth/Signup";
+import Login from "./pages/auth/Login";
+import ChatBoard from "./pages/chatboard";
 function App() {
   return (
-    <Stack direction="row">
-      <SideBar />
-      <ChatSection />
-    </Stack>
+    <>
+      <Routes>
+        <Route exact path="/" element={<ChatBoard />} />
+        <Route exact path="/register" element={<SignUp />} />
+        <Route exact path="/login" element={<Login/>} />
+
+      </Routes>
+    </>
   );
 }
 
