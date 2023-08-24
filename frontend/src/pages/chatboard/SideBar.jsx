@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { Box, Stack, Typography, Avatar, Divider, styled } from "@mui/material";
+import { Box, Stack, Typography, Avatar, styled, Chip } from "@mui/material";
 import { getUsers } from "../../utils/endpoints";
-const CustomDivider = styled(Divider)`
-  margin: 10px 0px 10px;
-  border-width: 0px 0px thin;
-  border-style: solid;
-  border-color: #aeb4be;
-`;
-const SideBar = () => {
+
+const SideBar = ({
+  clickedUser,
+  setClickedUser,
+  socket,
+  handleDrawerClose,
+}) => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -31,20 +31,46 @@ const SideBar = () => {
           padding: "20px 0",
         }}
       >
-        <Typography px="20px">chatMi</Typography>
+        <Stack direction="row" px="20px" justifyContent="space-between">
+          <Typography>chatMi</Typography>
+          <Chip
+            label={socket ? "Online" : "Offline"}
+            sx={{
+              height: "25px",
+              color: socket ? "#33d067" : "#e94560",
+              bgcolor: socket ? "#e7f9ed" : "#ffeaea",
+            }}
+          />
+        </Stack>
 
-        <Stack mt={3}>
-          <CustomDivider />
+        <Stack
+          mt={3}
+          sx={{
+            borderTop: "1px solid #aeb4be",
+          }}
+        >
           {users.map((user) => (
-            <Box>
+            <Box
+              onClick={() => {
+                setClickedUser(user?._id);
+                handleDrawerClose();
+              }}
+              sx={{
+                cursor: "pointer",
+                background:
+                  clickedUser === user._id ? "#AEB4BE" : "transparent",
+                borderBottom: "1px solid #aeb4be",
+              }}
+            >
               <Stack
                 direction="row"
                 spacing={1.5}
                 alignItems="center"
                 px="20px"
+                py="10px"
               >
                 <Avatar
-                  alt="Remy Sharp"
+                  alt={user.userName.toUpperCase()}
                   src="/static/images/avatar/1.jpg"
                   sx={{ width: 40, height: 40 }}
                 />
@@ -53,7 +79,6 @@ const SideBar = () => {
                   {user.userName}
                 </Typography>
               </Stack>
-              <CustomDivider />
             </Box>
           ))}
         </Stack>

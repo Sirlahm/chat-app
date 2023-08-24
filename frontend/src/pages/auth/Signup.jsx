@@ -14,7 +14,9 @@ import * as yup from "yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import useMediaQuery from "@mui/material/useMediaQuery";
-// import makeToast from "../../utils/toaster";
+ import makeToast from "../../utils/toaster";
+ import { signup } from "../../utils/endpoints";
+
 
 const CustomTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
@@ -82,8 +84,14 @@ const Signup = () => {
         <Formik
           onSubmit={(values, { resetForm }) => {
             const { confirmPassword, ...updatedValues } = values;
-            // dispatch(signup(updatedValues));
-            resetFormRef.current = resetForm;
+            signup(updatedValues)
+              .then((data) => {
+                makeToast("success", "Signing Up Sucessful!");
+                navigate("/login");
+              })
+              .catch((err) => {
+                makeToast("error", err.response.data.message);
+              });
           }}
           initialValues={initialValues}
           validationSchema={userSchema}
@@ -120,13 +128,13 @@ const Signup = () => {
                   color="#4b566b"
                   mb={1.5}
                 >
-                  Full Name
+                  Username
                 </Typography>
                 <CustomTextField
                   fullWidth
                   variant="outlined"
                   type="text"
-                  placeholder="Sirlahm23"
+                  placeholder="soujay123"
                   size="small"
                   onBlur={handleBlur}
                   onChange={handleChange}

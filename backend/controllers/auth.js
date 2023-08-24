@@ -3,29 +3,36 @@ const asyncHandler = require("express-async-handler");
 const { generateToken } = require("../config/jwtToken");
 
 const signUp = asyncHandler(async (req, res) => {
-  const email = req.body.email;
-  const findUser = await User.findOne({ email: email });
-  if (!findUser) {
-    const newUser = await User.create(req.body);
-    res.status(201).json({
-      _id: newUser?._id,
-      userName: newUser?.userName,
-      email: newUser?.email,
-      token: generateToken(newUser?._id),
-    });
-  } else {
+  const { email, userName } = req.body;
+  const findUser = await User.findOne({
+    $or: [{ email: email }, { userName: userName }],
+  });
+  if (findUser) {
     res.status(409);
-    throw new Error("User With This Email Or Phone-Number Already Exists");
+    throw new Error("User With This Email Or Username Already Exists");
+  } else {
+    try {
+      const newUser = await User.create(req.body);
+      res.status(201).json({
+        _id: newUser?._id,
+        userName: newUser?.userName,
+        email: newUser?.email,
+        token: generateToken(newUser?._id),
+      });
+    } catch (error) {
+      throw new Error("Something went wrong, Please try again ");
+    }
   }
 });
 
 // Login a user
 const login = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { emailOrUsername, password } = req.body;
   // check if user exists or not
   const findUser = await User.findOne({
-    email: email,
+    $or: [{ email: emailOrUsername }, { phone: emailOrUsername }],
   });
+
   if (findUser && (await findUser.isPasswordMatched(password))) {
     res.json({
       _id: findUser?._id,

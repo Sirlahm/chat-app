@@ -11,8 +11,9 @@ import {
 import { Formik } from "formik";
 import * as yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
+import { login } from "../../utils/endpoints";
 
-// import makeToast from "../../utils/toaster";
+import makeToast from "../../utils/toaster";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 const CustomTextField = styled(TextField)({
@@ -28,7 +29,7 @@ const CustomTextField = styled(TextField)({
   },
 });
 
-const Login = () => {
+const Login = ({ setupSocket }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const navigate = useNavigate();
@@ -70,7 +71,18 @@ const Login = () => {
         }}
       >
         <Formik
-          onSubmit={(values, { resetForm }) => {}}
+          onSubmit={(values, { resetForm }) => {
+            console.log(values);
+            login(values.emailOruserName, values.password)
+              .then((data) => {
+                makeToast("success", "Login Sucessful!");
+                setupSocket();
+                navigate("/dashboard");
+              })
+              .catch((err) => {
+                makeToast("error", err.response.data.message);
+              });
+          }}
           initialValues={initialValues}
           validationSchema={loginSchema}
         >
@@ -176,7 +188,7 @@ const Login = () => {
 
         <Stack direction="row" spacing={1} justifyContent="center" mt={3}>
           <Typography variant="subtitle2">Don't have account?</Typography>
-          <Link to={"/signup"} style={{ textDecoration: "none" }}>
+          <Link to={"/register"} style={{ textDecoration: "none" }}>
             <Typography
               variant="subtitle1"
               color="#2b3445"
@@ -188,7 +200,7 @@ const Login = () => {
             </Typography>
           </Link>
         </Stack>
-
+{/* 
         <Stack
           direction="row"
           spacing={1}
@@ -212,7 +224,7 @@ const Login = () => {
               Reset It
             </Typography>
           </Link>
-        </Stack>
+        </Stack> */}
       </Paper>
     </Box>
   );

@@ -6,7 +6,7 @@ const userRouter = require("./routes/user");
 const app = express();
 const dotenv = require("dotenv").config();
 const PORT = 5000;
-const cors = require("cors");
+const cors = require("cors"); 
 
 
 dbConnect();

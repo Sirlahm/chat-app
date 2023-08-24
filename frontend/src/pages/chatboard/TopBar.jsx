@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Box,
   Stack,
@@ -9,19 +10,22 @@ import {
   OutlinedInput,
   InputAdornment,
   Avatar,
+  Drawer,
+  useMediaQuery,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { Link } from "react-router-dom";
-import useMediaQuery from "@mui/material/useMediaQuery";
+// import useMediaQuery from "@mui/material/useMediaQuery";
 import MenuIcon from "@mui/icons-material/Menu";
 
 const TopBar = ({ handleDrawerOpen }) => {
-  const bigScreen = useMediaQuery("(min-width:1230px)");
+  const isNotMobile = useMediaQuery("(min-width:600px)");
 
   return (
     <Box
       bgcolor="white"
+      justifyContent={{ xs: "space-between", sm: "end" }}
       p={2}
       px={{ xs: 1.5, sm: 4 }}
       sx={{
@@ -29,8 +33,23 @@ const TopBar = ({ handleDrawerOpen }) => {
         position: "sticky",
         top: 0,
         zIndex: 20,
+        display: "flex",
+        alignItems: "center",
       }}
     >
+      <IconButton
+        onClick={handleDrawerOpen}
+        sx={{
+          background: "#F6F9FC",
+          display: isNotMobile ? "none" : "inline-flex",
+        }}
+      >
+        <MenuIcon />
+      </IconButton>
+      <Typography display={{ xs: "block", sm: "none" }} variant="body2" fontSize="17px">
+        chatMi
+      </Typography>
+
       <Stack direction="row" justifyContent="end" alignItems="center">
         {/* <Stack direction="row" spacing={{ xs: 2, lg: 0 }}>
           <IconButton
@@ -76,7 +95,7 @@ const TopBar = ({ handleDrawerOpen }) => {
         </Stack> */}
 
         <Stack direction="row" spacing={{ xs: 1.5, sm: 2 }} alignItems="center">
-          <OutlinedInput
+          {/* <OutlinedInput
             placeholder="Search anything"
             startAdornment={
               <InputAdornment position="start">
@@ -93,15 +112,16 @@ const TopBar = ({ handleDrawerOpen }) => {
                 fontSize: "14px",
               },
             }}
-          />
+          /> */}
 
           <NotificationsIcon
             sx={{
               color: "#AEB4BE",
+              fontSize: "25px"
             }}
           />
           <Avatar
-            alt="Remy Sharp"
+            alt={JSON.parse(localStorage.getItem("user")).userName.toUpperCase()}
             src="/static/images/avatar/1.jpg"
             sx={{ width: 30, height: 30 }}
           />
